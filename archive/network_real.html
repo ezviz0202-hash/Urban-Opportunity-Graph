@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "red", "id": "UserA", "label": "UserA", "shape": "dot", "title": "UserA (User)"}, {"color": "red", "id": "UserB", "label": "UserB", "shape": "dot", "title": "UserB (User)"}, {"color": "red", "id": "UserC", "label": "UserC", "shape": "dot", "title": "UserC (User)"}, {"color": "red", "id": "UserD", "label": "UserD", "shape": "dot", "title": "UserD (User)"}, {"color": "red", "id": "UserE", "label": "UserE", "shape": "dot", "title": "UserE (User)"}, {"color": "red", "id": "UserF", "label": "UserF", "shape": "dot", "title": "UserF (User)"}, {"color": "red", "id": "UserG", "label": "UserG", "shape": "dot", "title": "UserG (User)"}, {"color": "red", "id": "UserH", "label": "UserH", "shape": "dot", "title": "UserH (User)"}, {"color": "red", "id": "UserI", "label": "UserI", "shape": "dot", "title": "UserI (User)"}, {"color": "red", "id": "UserJ", "label": "UserJ", "shape": "dot", "title": "UserJ (User)"}, {"color": "red", "id": "UserK", "label": "UserK", "shape": "dot", "title": "UserK (User)"}, {"color": "red", "id": "UserL", "label": "UserL", "shape": "dot", "title": "UserL (User)"}, {"color": "orange", "id": "family", "label": "family", "shape": "dot", "title": "family (User Type)"}, {"color": "orange", "id": "student", "label": "student", "shape": "dot", "title": "student (User Type)"}, {"color": "orange", "id": "worker", "label": "worker", "shape": "dot", "title": "worker (User Type)"}, {"color": "blue", "id": "population_density", "label": "population_density", "shape": "dot", "title": "population_density (Data)"}, {"color": "blue", "id": "rent_high", "label": "rent_high", "shape": "dot", "title": "rent_high (Data)"}, {"color": "blue", "id": "rent_low", "label": "rent_low", "shape": "dot", "title": "rent_low (Data)"}, {"color": "blue", "id": "school_count", "label": "school_count", "shape": "dot", "title": "school_count (Data)"}, {"color": "green", "id": "Koto", "label": "Koto", "shape": "dot", "title": "Koto (Decision / Ward)"}, {"color": "green", "id": "Setagaya", "label": "Setagaya", "shape": "dot", "title": "Setagaya (Decision / Ward)"}, {"color": "green", "id": "Shibuya", "label": "Shibuya", "shape": "dot", "title": "Shibuya (Decision / Ward)"}, {"color": "green", "id": "Shinjuku", "label": "Shinjuku", "shape": "dot", "title": "Shinjuku (Decision / Ward)"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "UserA", "title": "has_type", "to": "student"}, {"arrows": "to", "from": "UserA", "title": "uses", "to": "school_count"}, {"arrows": "to", "from": "UserA", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserA", "title": "uses", "to": "rent_high"}, {"arrows": "to", "from": "UserA", "title": "makes", "to": "Koto"}, {"arrows": "to", "from": "UserB", "title": "has_type", "to": "student"}, {"arrows": "to", "from": "UserB", "title": "uses", "to": "school_count"}, {"arrows": "to", "from": "UserB", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserB", "title": "uses", "to": "rent_high"}, {"arrows": "to", "from": "UserB", "title": "makes", "to": "Shinjuku"}, {"arrows": "to", "from": "UserC", "title": "has_type", "to": "student"}, {"arrows": "to", "from": "UserC", "title": "uses", "to": "school_count"}, {"arrows": "to", "from": "UserC", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserC", "title": "uses", "to": "rent_high"}, {"arrows": "to", "from": "UserC", "title": "makes", "to": "Koto"}, {"arrows": "to", "from": "UserD", "title": "has_type", "to": "student"}, {"arrows": "to", "from": "UserD", "title": "uses", "to": "school_count"}, {"arrows": "to", "from": "UserD", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserD", "title": "uses", "to": "rent_high"}, {"arrows": "to", "from": "UserD", "title": "makes", "to": "Shinjuku"}, {"arrows": "to", "from": "UserE", "title": "has_type", "to": "worker"}, {"arrows": "to", "from": "UserE", "title": "uses", "to": "rent_low"}, {"arrows": "to", "from": "UserE", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserE", "title": "makes", "to": "Koto"}, {"arrows": "to", "from": "UserF", "title": "has_type", "to": "worker"}, {"arrows": "to", "from": "UserF", "title": "uses", "to": "rent_low"}, {"arrows": "to", "from": "UserF", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserF", "title": "makes", "to": "Setagaya"}, {"arrows": "to", "from": "UserG", "title": "has_type", "to": "worker"}, {"arrows": "to", "from": "UserG", "title": "uses", "to": "rent_low"}, {"arrows": "to", "from": "UserG", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserG", "title": "uses", "to": "school_count"}, {"arrows": "to", "from": "UserG", "title": "makes", "to": "Shinjuku"}, {"arrows": "to", "from": "UserH", "title": "has_type", "to": "worker"}, {"arrows": "to", "from": "UserH", "title": "uses", "to": "rent_low"}, {"arrows": "to", "from": "UserH", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserH", "title": "uses", "to": "school_count"}, {"arrows": "to", "from": "UserH", "title": "makes", "to": "Koto"}, {"arrows": "to", "from": "UserI", "title": "has_type", "to": "family"}, {"arrows": "to", "from": "UserI", "title": "uses", "to": "school_count"}, {"arrows": "to", "from": "UserI", "title": "uses", "to": "rent_low"}, {"arrows": "to", "from": "UserI", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserI", "title": "makes", "to": "Setagaya"}, {"arrows": "to", "from": "UserJ", "title": "has_type", "to": "family"}, {"arrows": "to", "from": "UserJ", "title": "uses", "to": "rent_low"}, {"arrows": "to", "from": "UserJ", "title": "makes", "to": "Koto"}, {"arrows": "to", "from": "UserK", "title": "has_type", "to": "family"}, {"arrows": "to", "from": "UserK", "title": "uses", "to": "school_count"}, {"arrows": "to", "from": "UserK", "title": "uses", "to": "rent_low"}, {"arrows": "to", "from": "UserK", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserK", "title": "makes", "to": "Setagaya"}, {"arrows": "to", "from": "UserL", "title": "has_type", "to": "family"}, {"arrows": "to", "from": "UserL", "title": "uses", "to": "population_density"}, {"arrows": "to", "from": "UserL", "title": "makes", "to": "Setagaya"}, {"arrows": "to", "from": "family", "title": "prefers", "to": "school_count"}, {"arrows": "to", "from": "family", "title": "prefers", "to": "rent_low"}, {"arrows": "to", "from": "family", "title": "prefers", "to": "population_density"}, {"arrows": "to", "from": "student", "title": "prefers", "to": "school_count"}, {"arrows": "to", "from": "student", "title": "prefers", "to": "population_density"}, {"arrows": "to", "from": "student", "title": "prefers", "to": "rent_high"}, {"arrows": "to", "from": "worker", "title": "prefers", "to": "rent_low"}, {"arrows": "to", "from": "worker", "title": "prefers", "to": "population_density"}, {"arrows": "to", "from": "worker", "title": "prefers", "to": "school_count"}, {"arrows": "to", "from": "population_density", "title": "influences (high)", "to": "Shinjuku"}, {"arrows": "to", "from": "population_density", "title": "influences (high)", "to": "Shibuya"}, {"arrows": "to", "from": "population_density", "title": "influences (high)", "to": "Setagaya"}, {"arrows": "to", "from": "population_density", "title": "influences (low)", "to": "Koto"}, {"arrows": "to", "from": "rent_high", "title": "influences (high)", "to": "Shinjuku"}, {"arrows": "to", "from": "rent_high", "title": "influences (high)", "to": "Shibuya"}, {"arrows": "to", "from": "rent_high", "title": "influences (low)", "to": "Setagaya"}, {"arrows": "to", "from": "rent_high", "title": "influences (low)", "to": "Koto"}, {"arrows": "to", "from": "rent_low", "title": "influences (high)", "to": "Shinjuku"}, {"arrows": "to", "from": "rent_low", "title": "influences (high)", "to": "Shibuya"}, {"arrows": "to", "from": "rent_low", "title": "influences (low)", "to": "Setagaya"}, {"arrows": "to", "from": "rent_low", "title": "influences (low)", "to": "Koto"}, {"arrows": "to", "from": "school_count", "title": "influences (low)", "to": "Shinjuku"}, {"arrows": "to", "from": "school_count", "title": "influences (low)", "to": "Shibuya"}, {"arrows": "to", "from": "school_count", "title": "influences (high)", "to": "Setagaya"}, {"arrows": "to", "from": "school_count", "title": "influences (high)", "to": "Koto"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

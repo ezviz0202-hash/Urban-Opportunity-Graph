@@ -1,0 +1,5 @@
+ward,avg_1k_rent_low_jpy,avg_1k_rent_high_jpy,population_total,area_km2,population_density_per_km2,elementary_schools,notes
+Shinjuku,110000,150000,354444,18.22,19454,29,official population 2026-04-01; official ward area; official ward elementary school list; rent range from 2026 guide
+Shibuya,120000,160000,230805,15.11,15275,18,official population 2026-03-01; official ward area; official ward elementary school list; rent range from 2026 guide
+Setagaya,90000,120000,928229,58.049,15990,61,official monthly population CSV for 2026-03-01; official elementary school list; rent range from 2026 guide
+Koto,85000,110000,543103,42.99,12633,45,official population PDF 2026-03-01; official ward area; official elementary school list; rent range from 2026 guide
