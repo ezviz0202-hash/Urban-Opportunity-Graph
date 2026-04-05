@@ -1,0 +1,9 @@
+data_node,frequency,rarity,types_connected,n_types,betweenness,bridge_score
+commercial_score,7,0.8542,"['family', 'student', 'worker']",3,0.0176,2.6077
+transport_score,11,0.7708,"['family', 'student', 'worker']",3,0.0259,2.3725
+crime_rate,3,0.9375,"['family', 'worker']",2,0.0096,1.893
+population_density,7,0.8542,"['student', 'worker']",2,0.0195,1.7416
+school_count,7,0.8542,"['family', 'student']",2,0.0183,1.7396
+rent_low,7,0.8542,"['family', 'worker']",2,0.0176,1.7384
+livability_score,3,0.9375,['family'],1,0.0081,0.9451
+rent_high,3,0.9375,['student'],1,0.0075,0.9445

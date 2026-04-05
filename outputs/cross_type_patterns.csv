@@ -1,0 +1,4 @@
+user_type,hidden_attractor,occurrence,example_wards
+worker,commercial_score_norm,2,"['Shibuya', 'Shinjuku']"
+family,commercial_score_norm,2,['Shinjuku']
+worker,transport_score_norm,1,['Shinagawa']

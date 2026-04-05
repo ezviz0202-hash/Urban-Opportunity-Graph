@@ -1,0 +1,6 @@
+user,user_type,chosen_ward,primary_concern,concern_score,median_concern_score,hidden_attractor,attractor_score,contradiction_strength
+UserH,worker,Shinjuku,safety (low crime),0.0,0.719,commercial_score_norm,1.0,0.719
+UserF,worker,Shibuya,safety (low crime),0.125,0.719,commercial_score_norm,0.974,0.594
+UserI,family,Shinjuku,school accessibility,0.256,0.326,commercial_score_norm,1.0,0.07
+UserK,family,Shinjuku,school accessibility,0.256,0.326,commercial_score_norm,1.0,0.07
+UserE,worker,Shinagawa,safety (low crime),0.688,0.719,transport_score_norm,0.92,0.031
