@@ -1,29 +1,9 @@
-"""
-discover_opportunities.py
---------------------------
-KeyGraph-inspired opportunity discovery for urban co-creation analysis.
-
-Conceptually follows Ohsawa (1996)'s KeyGraph method:
-  - frequent co-occurrences form the "base" (common ground)
-  - rare nodes that bridge these clusters = hidden opportunities
-
-Here we apply this idea to the user-data-ward interaction graph:
-  - common data usage patterns = base clusters
-  - wards/data nodes that appear in unexpected cross-type contexts = opportunities
-
-Also detects "contradiction choices" -- wards chosen by a user type despite
-scoring poorly on that type's primary concern. These are the most interesting
-patterns because they reveal hidden attractors in urban data.
-"""
 
 import math
 from collections import Counter, defaultdict
 import pandas as pd
 import networkx as nx
 from build_graph import G
-
-
-# ── load raw data ─────────────────────────────────────────────────────────────
 
 user_profile_df  = pd.read_csv("data/user_profile.csv")
 user_data_df     = pd.read_csv("data/user_data_real.csv")
@@ -33,34 +13,20 @@ tokyo_df         = pd.read_csv("data/tokyo_ward_data_extended.csv")
 
 user_to_type = dict(zip(user_profile_df["user"], user_profile_df["type"]))
 
-# primary concern for each type (the factor they care MOST about)
 PRIMARY_CONCERN = {
     "student": "school_count_score",
     "worker":  "crime_rate_score",      # workers want LOW crime -> score = 1-crime
     "family":  "school_count_score",
 }
 
-# readable label for the concern
 CONCERN_LABEL = {
     "student": "school accessibility",
     "worker":  "safety (low crime)",
     "family":  "school accessibility",
 }
 
-
-# ── 1. KeyGraph-inspired bridge node analysis ──────────────────────────────────
-
 def keygraph_bridge_analysis():
-    """
-    Find data nodes that serve as "bridges" between different user types.
-
-    In KeyGraph terms:
-      - high-frequency nodes = base (black nodes)
-      - low-frequency nodes that connect multiple clusters = islands (red nodes)
-      - islands with high betweenness centrality = hidden opportunities
-
-    Returns a sorted list of (data_node, bridge_score, types_connected).
-    """
+   
     # how often each (type, data) pair occurs
     type_data_usage = defaultdict(set)
     for _, row in user_data_df.iterrows():
@@ -73,7 +39,6 @@ def keygraph_bridge_analysis():
 
     total_usage = sum(data_freq.values())
 
-    # betweenness centrality on the full graph
     between = nx.betweenness_centrality(G, normalized=True)
 
     results = []
@@ -83,7 +48,7 @@ def keygraph_bridge_analysis():
         n_types    = len(types_connected)               # how many types use it
         centrality = between.get(data_node, 0.0)
 
-        # bridge score: rare node that connects many types AND sits at crossroads
+      
         bridge_score = rarity * n_types * (1 + centrality)
 
         results.append({
@@ -99,18 +64,8 @@ def keygraph_bridge_analysis():
     return sorted(results, key=lambda x: x["bridge_score"], reverse=True)
 
 
-# ── 2. Contradiction choice detection ─────────────────────────────────────────
-
 def find_contradiction_choices():
-    """
-    Find cases where a user type chose a ward that scores POORLY on their
-    primary concern -- i.e., the interaction with other data features
-    "pulled" them toward an unexpected ward.
-
-    These are the counter-intuitive patterns: the hidden attractors.
-
-    Returns a list of dicts describing each contradiction case.
-    """
+  
     def normalize(series, reverse=False):
         lo, hi = series.min(), series.max()
         if hi == lo:
@@ -146,7 +101,7 @@ def find_contradiction_choices():
         ward_score_on_concern = ward_scores.loc[ward, concern]
         median               = median_scores[concern]
 
-        # contradiction = chosen ward scores BELOW median on primary concern
+      
         if ward_score_on_concern < median:
             # what did pull them there? find the highest-scoring feature
             feature_cols = [
@@ -173,13 +128,8 @@ def find_contradiction_choices():
     return sorted(contradictions, key=lambda x: x["contradiction_strength"], reverse=True)
 
 
-# ── 3. Cross-type opportunity summary ─────────────────────────────────────────
-
 def summarise_cross_type_patterns(contradictions):
-    """
-    Aggregate contradiction choices by (user_type, hidden_attractor) pair
-    to find systematic cross-type opportunity patterns.
-    """
+   
     pair_counts  = Counter()
     pair_wards   = defaultdict(list)
 
@@ -198,16 +148,12 @@ def summarise_cross_type_patterns(contradictions):
         })
     return summary
 
-
-# ── main ───────────────────────────────────────────────────────────────────────
-
 if __name__ == "__main__":
 
     print("=" * 60)
     print("  Opportunity Discovery -- KeyGraph-Inspired Analysis")
     print("=" * 60)
 
-    # -- bridge nodes --
     print("\n[1] KeyGraph Bridge Nodes (hidden opportunity data features)\n")
     bridges = keygraph_bridge_analysis()
     for b in bridges[:8]:
@@ -218,7 +164,6 @@ if __name__ == "__main__":
             f"freq={b['frequency']}"
         )
 
-    # -- contradiction choices --
     print("\n[2] Contradiction Choices (counter-intuitive ward selections)\n")
     contradictions = find_contradiction_choices()
     print(f"  Total contradiction cases found: {len(contradictions)}")
@@ -231,7 +176,6 @@ if __name__ == "__main__":
             f"  |  hidden attractor: {c['hidden_attractor']} ({c['attractor_score']:.2f})"
         )
 
-    # -- cross-type summary --
     print("\n[3] Systematic Cross-Type Opportunity Patterns\n")
     summary = summarise_cross_type_patterns(contradictions)
     for s in summary:
@@ -242,7 +186,6 @@ if __name__ == "__main__":
             f"example wards: {s['example_wards']}"
         )
 
-    # -- save --
     pd.DataFrame(bridges).to_csv("outputs/bridge_nodes.csv", index=False)
     pd.DataFrame(contradictions).to_csv("outputs/contradiction_choices.csv", index=False)
     pd.DataFrame(summary).to_csv("outputs/cross_type_patterns.csv", index=False)
