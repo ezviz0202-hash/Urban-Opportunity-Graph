@@ -4,8 +4,6 @@ import pandas as pd
 import networkx as nx
 from build_graph import G
 
-# ── basic setup ───────────────────────────────────────────────────────────────
-
 user_to_type = {}
 for source, target, attrs in G.edges(data=True):
     if attrs["type"] == "has_type":
@@ -26,8 +24,6 @@ data_centrality = {
     for node, score in degree_centrality.items()
     if G.nodes[node].get("type") == "data"
 }
-
-# ── standard anomaly scoring ──────────────────────────────────────────────────
 
 results = []
 for (user_type, data_name), freq in pair_counter.items():
@@ -77,8 +73,6 @@ results_df = pd.DataFrame(results)
 results_df.to_csv("outputs/anomaly_results.csv", index=False)
 print("\nSaved outputs/anomaly_results.csv")
 
-
-# ── contradiction detection ───────────────────────────────────────────────────
 # finds cases where a user type chose a ward that scores poorly on their
 # primary concern -- these are the counter-intuitive patterns
 
